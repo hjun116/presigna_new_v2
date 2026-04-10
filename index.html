@@ -19,6 +19,13 @@
     ::-webkit-scrollbar-track { background: #0D0D12; }
     ::-webkit-scrollbar-thumb { background: #1F1F29; border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: #7B61FF; }
+    .img-stack { position: relative; height: 560px; }
+    .stack-card { position: absolute; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 12px 40px rgba(0,0,0,0.7); }
+    .stack-card img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+    .card-1 { width: 92%; left: 0%;  top: 0px;   z-index: 4; height: 210px; transform: rotate(-1.5deg); }
+    .card-2 { width: 88%; left: 4%;  top: 115px; z-index: 3; height: 195px; transform: rotate(1deg);    }
+    .card-3 { width: 85%; left: 1%;  top: 225px; z-index: 2; height: 190px; transform: rotate(-0.8deg); }
+    .card-4 { width: 83%; left: 5%;  top: 335px; z-index: 1; height: 185px; transform: rotate(1.2deg);  }
   </style>
 </head>
 <body class="min-h-screen bg-[#0D0D12] text-slate-300 antialiased selection:bg-[#7B61FF]/30 selection:text-white">
@@ -35,7 +42,7 @@
 
   <main class="max-w-[1500px] mx-auto px-6 lg:px-12 pb-32 pt-8 flex flex-col lg:grid lg:grid-cols-12 gap-16 lg:gap-24 xl:gap-32 items-start">
 
-    <div class="lg:col-span-7 flex flex-col space-y-16 lg:sticky lg:top-12 z-10 pt-4">
+    <div class="lg:col-span-7 flex flex-col space-y-16 pt-4">
       <div class="space-y-8">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#7B61FF]/30 bg-[#7B61FF]/10 text-[#9D8BFF] text-[10px] font-bold uppercase tracking-[0.2em] md:hidden">
           <span class="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse"></span>
@@ -83,9 +90,26 @@
           </div>
         </li>
       </ul>
+
+      <!-- Image stack -->
+      <div class="img-stack">
+        <div class="stack-card card-1">
+          <img src="partner1.png" alt="Partner Intelligence Report" />
+        </div>
+        <div class="stack-card card-2">
+          <img src="cli1.png" alt="Clinical Development Tracker" />
+        </div>
+        <div class="stack-card card-3">
+          <img src="pre1.png" alt="Preclinical Data Explorer" />
+        </div>
+        <div class="stack-card card-4">
+          <img src="pre2.png" alt="Preclinical Data Results" />
+        </div>
+      </div>
+
     </div>
 
-    <div class="lg:col-span-5 w-full relative mt-4 lg:mt-0">
+    <div class="lg:col-span-5 w-full relative mt-4 lg:mt-0 lg:sticky lg:top-12 self-start z-10">
       <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[60%] bg-[#7B61FF]/8 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
       <div class="relative z-10 w-full rounded-2xl border border-white/10 bg-[#16161D] shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col">
@@ -140,7 +164,6 @@
           <p class="text-xs text-slate-600 mt-4 text-center font-medium">Secure & confidential. Domain verification required.</p>
         </div>
 
-
       </div>
     </div>
   </main>
@@ -180,7 +203,7 @@
       } catch (err) {
         showError(errorEl, 'Storage unavailable. Please enable cookies/local storage.');
         btn.disabled = false;
-        btn.innerHTML = 'Continue to Platform <svg ...></svg>';
+        btn.innerHTML = 'Continue to Platform';
         return;
       }
 
