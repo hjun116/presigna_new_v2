@@ -239,7 +239,7 @@ const App = () => {
         <div className="space-y-4">
           
           {/* 2. Clinical Pipeline Tracker */}
-          <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col gap-5">
             <div className="flex items-center gap-5">
               <div className="p-3 bg-[#7B61FF]/10 rounded-xl text-[#7B61FF] flex items-center justify-center shrink-0">
                 <Icon name="stethoscope" size={26} />
@@ -249,18 +249,18 @@ const App = () => {
                 <p className="text-gray-500 text-[12px] font-medium mt-0.5">Real-time monitoring of trial progression.</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <button onClick={() => setPremiumAction('Premium_Interest_Clinical_PDF')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
-                <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF
+            <div className="flex flex-col gap-2">
+              <button onClick={() => trackClick('Open_Clinical_Pipeline', 'https://presigna-clinical-pipeline-tracker.streamlit.app/')} className="w-full py-3 rounded-xl bg-[#7B61FF] hover:bg-[#6a50ee] text-white text-sm font-bold transition-all border border-[#7B61FF]/50 flex items-center justify-center gap-2">
+                Open <Icon name="external-link" size={14} />
               </button>
-              <button onClick={() => trackClick('Open_Clinical_Pipeline', 'https://presigna-clinical-pipeline-tracker.streamlit.app/')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#7B61FF]/10 hover:bg-[#7B61FF]/20 text-[#7B61FF] text-xs font-bold transition-all border border-[#7B61FF]/20 flex items-center justify-center gap-2">
-                Open <Icon name="external-link" size={12} />
+              <button onClick={() => setPremiumAction('Premium_Interest_Clinical_PDF')} className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 text-xs font-bold transition-all border border-white/10 flex items-center justify-center gap-2">
+                <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF (Premium)
               </button>
             </div>
           </div>
 
           {/* 3. Preclinical Data Explorer */}
-          <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col gap-5">
             <div className="flex items-center gap-5">
               <div className="p-3 bg-[#7B61FF]/10 rounded-xl text-[#7B61FF] flex items-center justify-center shrink-0">
                 <Icon name="flask-conical" size={26} />
@@ -270,12 +270,12 @@ const App = () => {
                 <p className="text-gray-500 text-[12px] font-medium mt-0.5">Deep-dive into early-stage asset data.</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <button onClick={() => setPremiumAction('Premium_Interest_Preclinical_PDF')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
-                <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF
+            <div className="flex flex-col gap-2">
+              <button onClick={() => trackClick('Open_Preclinical_Explorer', 'https://presigna-preclinical-data-explorer.streamlit.app/')} className="w-full py-3 rounded-xl bg-[#7B61FF] hover:bg-[#6a50ee] text-white text-sm font-bold transition-all border border-[#7B61FF]/50 flex items-center justify-center gap-2">
+                Open <Icon name="external-link" size={14} />
               </button>
-              <button onClick={() => trackClick('Open_Preclinical_Explorer', 'https://presigna-preclinical-data-explorer.streamlit.app/')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#7B61FF]/10 hover:bg-[#7B61FF]/20 text-[#7B61FF] text-xs font-bold transition-all border border-[#7B61FF]/20 flex items-center justify-center gap-2">
-                Open <Icon name="external-link" size={12} />
+              <button onClick={() => setPremiumAction('Premium_Interest_Preclinical_PDF')} className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 text-xs font-bold transition-all border border-white/10 flex items-center justify-center gap-2">
+                <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF (Premium)
               </button>
             </div>
           </div>
@@ -318,7 +318,7 @@ const App = () => {
                     <Icon name="check" size={32} />
                   </div>
                   <h3 className="text-xl font-black text-white mb-2 tracking-tight">Waitlist Confirmed!</h3>
-                  <p className="text-gray-400 text-sm">Your early bird registration is complete!<br/>We will notify you via your registered email upon the official launch.</p>
+                  <p className="text-gray-400 text-sm">얼리버드 혜택이 등록되었습니다.<br/>정식 런칭 시 등록된 이메일로 안내해 드리겠습니다.</p>
                 </div>
               ) : (
                 <>
