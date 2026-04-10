@@ -35,248 +35,293 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2O22ViMQtwS16wlYEZhKHU7tJNuuYzTYfTi4y3LAh7zzfCUtn163WayDvoMoNQWnLSQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5cehBe0lpiXq1__m88Lf8Slhv04fi7ioQawyA5ppyy6h8TA9a0JB4C395o0ybkfRs/exec';
 
-    const getStoredUser = () => {
-      try {
-        const raw = localStorage.getItem('presigna_user');
-        return raw ? JSON.parse(raw) : null;
-      } catch (e) { return null; }
-    };
+const getStoredUser = () => {
+  try {
+    const raw = localStorage.getItem('presigna_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+};
 
-    const submitToAPI = async (payload) => {
-      try {
-        await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(payload).toString()
-        });
-        return true;
-      } catch (error) { return false; }
-    };
+const submitToAPI = async (payload) => {
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(payload).toString()
+    });
+    return true;
+  } catch (error) { return false; }
+};
 
-    const Icon = ({ name, size = 24, className = '' }) => {
-      const spanRef = useRef(null);
-      useEffect(() => {
-        if (spanRef.current) {
-          spanRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
-          lucide.createIcons({
-            attrs: { width: size, height: size },
-            nodes: [spanRef.current.querySelector('i')]
-          });
-        }
-      }, [name, size, className]);
-      return <span ref={spanRef} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} />;
-    };
+const Icon = ({ name, size = 24, className = '' }) => {
+  const spanRef = useRef(null);
+  useEffect(() => {
+    if (spanRef.current) {
+      spanRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
+      lucide.createIcons({
+        attrs: { width: size, height: size },
+        nodes: [spanRef.current.querySelector('i')]
+      });
+    }
+  }, [name, size, className]);
+  return <span ref={spanRef} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} />;
+};
 
-    const App = () => {
-      const [user, setUser] = useState({ name: '', email: '' });
-      const [partner, setPartner] = useState(''); // Only 1 free partner state now
-      const [formStatus, setFormStatus] = useState({ loading: false, error: '' });
-      const [showSuccessModal, setShowSuccessModal] = useState(false);
-      const [showPremiumModal, setShowPremiumModal] = useState(false); // Premium 팝업 상태
+const App = () => {
+  const [user, setUser] = useState({ name: '', email: '' });
+  const [partner, setPartner] = useState(''); 
+  const [formStatus, setFormStatus] = useState({ loading: false, error: '' });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
+  // WTP 트래킹용 핵심 State
+  const [premiumAction, setPremiumAction] = useState(''); // 어떤 버튼이 눌렸는지 식별
+  const [premiumLoading, setPremiumLoading] = useState(false);
+  const [premiumSuccess, setPremiumSuccess] = useState(false);
 
-      useEffect(() => {
-        const stored = getStoredUser();
-        if (!stored) {
-          window.location.href = 'index.html';
-          return;
-        }
-        setUser({ name: stored.name, email: stored.email });
-      }, []);
+  useEffect(() => {
+    const stored = getStoredUser();
+    if (!stored) {
+      window.location.href = 'index.html';
+      return;
+    }
+    setUser({ name: stored.name, email: stored.email });
+  }, []);
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        setFormStatus({ loading: true, error: '' });
+  // 1. 무료 파트너 1개 분석 요청 (Initial Action)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus({ loading: true, error: '' });
 
-        if (partner.trim().length === 0) {
-          setFormStatus({ loading: false, error: 'Please enter a target company.' });
-          return;
-        }
+    if (partner.trim().length === 0) {
+      setFormStatus({ loading: false, error: 'Please enter a target company.' });
+      return;
+    }
 
-        const success = await submitToAPI({
-          name: user.name,
-          email: user.email,
-          partner1: partner.trim()
-        });
+    const success = await submitToAPI({
+      name: user.name,
+      email: user.email,
+      action: 'Free_Partner_Request',
+      partner1: partner.trim()
+    });
 
-        if (success) {
-          setShowSuccessModal(true);
-          setFormStatus({ loading: false, error: '' });
-        } else {
-          setFormStatus({ loading: false, error: 'Network error. Please try again.' });
-        }
-      };
+    if (success) {
+      setShowSuccessModal(true);
+      setFormStatus({ loading: false, error: '' });
+      setPartner(''); // 입력창 초기화
+    } else {
+      setFormStatus({ loading: false, error: 'Network error. Please try again.' });
+    }
+  };
 
-      const trackClick = async (actionName, url) => {
-        submitToAPI({ action: actionName, name: user.name, email: user.email });
-        window.open(url, '_blank', 'noopener,noreferrer');
-      };
+  // 2. 외부 링크 클릭 트래킹
+  const trackClick = async (actionName, url) => {
+    submitToAPI({ action: actionName, name: user.name, email: user.email });
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
-      const handleLogout = () => {
-        try { localStorage.removeItem('presigna_user'); } catch (e) {}
-        window.location.href = 'index.html';
-      };
+  // 3. 프리미엄 업셀링 결제 의향 전송 (WTP Tracking)
+  const handlePremiumInterest = async () => {
+    setPremiumLoading(true);
+    
+    const success = await submitToAPI({
+      name: user.name,
+      email: user.email,
+      action: premiumAction // 클릭한 자물쇠에 부여된 구체적인 태그 전송
+    });
 
-      return (
-        <div className="min-h-screen selection:bg-[#7B61FF]/30 selection:text-white">
-          <nav className="px-6 py-5 flex items-center justify-between sticky top-0 bg-[#0D0D12]/85 premium-blur z-20 border-b border-white/5 relative">
-            <button onClick={handleLogout} className="p-2 hover:bg-white/5 rounded-full transition-colors border border-white/5 z-10">
-              <Icon name="chevron-left" size={20} />
-            </button>
-            <span className="absolute left-1/2 -translate-x-1/2 font-display text-[1.2rem] font-bold text-white tracking-tight select-none">
-              presigna<span className="text-[#7B61FF] text-xl leading-none">.</span>
-            </span>
-            {user.name && (
-              <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-                <div className="w-6 h-6 rounded-full bg-[#7B61FF]/30 border border-[#7B61FF]/40 flex items-center justify-center">
-                  <Icon name="user" size={12} className="text-[#9D8BFF]" />
-                </div>
-                <span className="text-xs font-semibold text-slate-300 hidden sm:block max-w-[140px] truncate">{user.name}</span>
-              </div>
-            )}
-          </nav>
+    setPremiumLoading(false);
 
-          <main className="max-w-xl mx-auto px-6 pb-20 space-y-10">
-            <header className="flex flex-col items-center text-center space-y-5 py-10">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#7B61FF]/40 bg-[#7B61FF]/10 text-[#9D8BFF] text-[10px] font-bold uppercase tracking-[0.2em]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse"></span>
-                Partnering Intelligence
-              </div>
-              <h1 className="font-display text-4xl sm:text-5xl font-black leading-[1.15] tracking-tight">
-                Strategic Insights for <br/>
-                <span className="text-[#7B61FF]">BIO KOREA 2026</span>
-              </h1>
-              <p className="text-slate-400 text-sm font-medium">
-                Welcome back, <span className="text-white font-semibold">{user.name}</span>
+    if (success) {
+      setPremiumSuccess(true);
+      setTimeout(() => {
+        setPremiumAction(''); // 3초 뒤 모달 닫기
+        setPremiumSuccess(false); // 성공 상태 초기화
+      }, 3000);
+    } else {
+      alert('Network error occurred. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    try { localStorage.removeItem('presigna_user'); } catch (e) {}
+    window.location.href = 'index.html';
+  };
+
+  return (
+    <div className="min-h-screen selection:bg-[#7B61FF]/30 selection:text-white">
+      {/* GNB */}
+      <nav className="px-6 py-5 flex items-center justify-between sticky top-0 bg-[#0D0D12]/85 premium-blur z-20 border-b border-white/5 relative">
+        <button onClick={handleLogout} className="p-2 hover:bg-white/5 rounded-full transition-colors border border-white/5 z-10">
+          <Icon name="chevron-left" size={20} />
+        </button>
+        <span className="absolute left-1/2 -translate-x-1/2 font-display text-[1.2rem] font-bold text-white tracking-tight select-none">
+          presigna<span className="text-[#7B61FF] text-xl leading-none">.</span>
+        </span>
+        {user.name && (
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <div className="w-6 h-6 rounded-full bg-[#7B61FF]/30 border border-[#7B61FF]/40 flex items-center justify-center">
+              <Icon name="user" size={12} className="text-[#9D8BFF]" />
+            </div>
+            <span className="text-xs font-semibold text-slate-300 hidden sm:block max-w-[140px] truncate">{user.name}</span>
+          </div>
+        )}
+      </nav>
+
+      <main className="max-w-xl mx-auto px-6 pb-20 space-y-10">
+        <header className="flex flex-col items-center text-center space-y-5 py-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#7B61FF]/40 bg-[#7B61FF]/10 text-[#9D8BFF] text-[10px] font-bold uppercase tracking-[0.2em]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse"></span>
+            Partnering Intelligence
+          </div>
+          <h1 className="font-display text-4xl sm:text-5xl font-black leading-[1.15] tracking-tight">
+            Strategic Insights for <br/>
+            <span className="text-[#7B61FF]">BIO KOREA 2026</span>
+          </h1>
+          <p className="text-slate-400 text-sm font-medium">
+            Welcome back, <span className="text-white font-semibold">{user.name}</span>
+          </p>
+        </header>
+
+        {/* 1. Tailored Partner Intelligence */}
+        <section className="bg-card rounded-[28px] p-8 border border-white/10 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-[#7B61FF]/8 blur-[60px] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+
+          <div className="flex items-start gap-5 mb-8 relative z-10">
+            <div className="p-3.5 bg-[#7B61FF]/15 rounded-2xl border border-[#7B61FF]/20 flex items-center justify-center shrink-0">
+              <Icon name="target" size={28} className="text-[#7B61FF]" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight">Tailored Partner Intelligence</h2>
+              <p className="text-gray-400 text-[13px] mt-1.5 leading-relaxed font-medium">
+                Boardroom-ready strategic overviews of your specific target companies.
               </p>
-            </header>
+            </div>
+          </div>
 
-            {/* 1. Tailored Partner Intelligence */}
-            <section className="bg-card rounded-[28px] p-8 border border-white/10 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-[#7B61FF]/8 blur-[60px] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-
-              <div className="flex items-start gap-5 mb-8 relative z-10">
-                <div className="p-3.5 bg-[#7B61FF]/15 rounded-2xl border border-[#7B61FF]/20 flex items-center justify-center shrink-0">
-                  <Icon name="target" size={28} className="text-[#7B61FF]" />
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10" noValidate>
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] ml-1 block">Target Companies</label>
+              <div className="space-y-3">
+                {/* Free Input */}
+                <input
+                  type="text"
+                  placeholder="Partner 1 (Free Analysis)"
+                  value={partner}
+                  onChange={(e) => setPartner(e.target.value)}
+                  className="w-full bg-[#0D0D12] border border-white/10 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[#7B61FF] focus:ring-1 focus:ring-[#7B61FF] transition-all font-medium text-white"
+                />
+                
+                {/* Locked Inputs - Action 할당 */}
+                <div onClick={() => setPremiumAction('Premium_Interest_Partner_Add')} className="relative group cursor-pointer">
+                  <input type="text" placeholder="Partner 2 (Premium)" disabled className="w-full bg-[#0D0D12]/50 border border-white/5 rounded-2xl px-5 py-4 text-base text-slate-500 cursor-pointer font-medium" />
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-[#7B61FF] transition-colors"><Icon name="lock" size={16} /></div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight">Tailored Partner Intelligence</h2>
-                  <p className="text-gray-400 text-[13px] mt-1.5 leading-relaxed font-medium">
-                    Boardroom-ready strategic overviews of your specific target companies.
-                  </p>
+                <div onClick={() => setPremiumAction('Premium_Interest_Partner_Add')} className="relative group cursor-pointer">
+                  <input type="text" placeholder="Partner 3 (Premium)" disabled className="w-full bg-[#0D0D12]/50 border border-white/5 rounded-2xl px-5 py-4 text-base text-slate-500 cursor-pointer font-medium" />
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-[#7B61FF] transition-colors"><Icon name="lock" size={16} /></div>
                 </div>
               </div>
+            </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6 relative z-10" noValidate>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] ml-1 block">Target Companies</label>
-                  <div className="space-y-3">
-                    {/* Free Input */}
-                    <input
-                      type="text"
-                      placeholder="Partner 1 (Free Analysis)"
-                      value={partner}
-                      onChange={(e) => setPartner(e.target.value)}
-                      className="w-full bg-[#0D0D12] border border-white/10 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[#7B61FF] focus:ring-1 focus:ring-[#7B61FF] transition-all font-medium text-white"
-                    />
-                    
-                    {/* Locked Inputs */}
-                    <div onClick={() => setShowPremiumModal(true)} className="relative group cursor-pointer">
-                      <input type="text" placeholder="Partner 2 (Premium)" disabled className="w-full bg-[#0D0D12]/50 border border-white/5 rounded-2xl px-5 py-4 text-base text-slate-500 cursor-pointer font-medium" />
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-[#7B61FF] transition-colors"><Icon name="lock" size={16} /></div>
-                    </div>
-                    <div onClick={() => setShowPremiumModal(true)} className="relative group cursor-pointer">
-                      <input type="text" placeholder="Partner 3 (Premium)" disabled className="w-full bg-[#0D0D12]/50 border border-white/5 rounded-2xl px-5 py-4 text-base text-slate-500 cursor-pointer font-medium" />
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-[#7B61FF] transition-colors"><Icon name="lock" size={16} /></div>
-                    </div>
-                  </div>
-                </div>
+            {formStatus.error && <p className="text-red-400 text-xs font-medium px-1">{formStatus.error}</p>}
 
-                {formStatus.error && <p className="text-red-400 text-xs font-medium px-1">{formStatus.error}</p>}
+            <button type="submit" disabled={formStatus.loading} className="w-full bg-[#7B61FF] hover:bg-[#6a50ee] disabled:opacity-50 text-white font-extrabold py-5 rounded-2xl shadow-lg transition-all active:scale-[0.97] flex items-center justify-center gap-3 text-base border border-[#7B61FF]/40">
+              {formStatus.loading ? 'Processing...' : 'Request Free Analysis Report'}
+              {!formStatus.loading && <Icon name="send" size={18} />}
+            </button>
+          </form>
+        </section>
 
-                <button type="submit" disabled={formStatus.loading} className="w-full bg-[#7B61FF] hover:bg-[#6a50ee] disabled:opacity-50 text-white font-extrabold py-5 rounded-2xl shadow-lg transition-all active:scale-[0.97] flex items-center justify-center gap-3 text-base border border-[#7B61FF]/40">
-                  {formStatus.loading ? 'Processing...' : 'Request Free Analysis Report'}
-                  {!formStatus.loading && <Icon name="send" size={18} />}
-                </button>
-              </form>
-            </section>
+        {/* 2 & 3. Data Tools */}
+        <div className="space-y-4">
+          
+          {/* 2. Clinical Pipeline Tracker */}
+          <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-center gap-5">
+              <div className="p-3 bg-[#7B61FF]/10 rounded-xl text-[#7B61FF] flex items-center justify-center shrink-0">
+                <Icon name="stethoscope" size={26} />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-white tracking-tight">Clinical Development Tracker</h2>
+                <p className="text-gray-500 text-[12px] font-medium mt-0.5">Real-time monitoring of trial progression.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button onClick={() => setPremiumAction('Premium_Interest_Clinical_PDF')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
+                <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF
+              </button>
+              <button onClick={() => trackClick('Open_Clinical_Pipeline', 'https://presigna-clinical-pipeline-tracker.streamlit.app/')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#7B61FF]/10 hover:bg-[#7B61FF]/20 text-[#7B61FF] text-xs font-bold transition-all border border-[#7B61FF]/20 flex items-center justify-center gap-2">
+                Open <Icon name="external-link" size={12} />
+              </button>
+            </div>
+          </div>
 
-            {/* 2 & 3. Data Tools with Locked PDF Export */}
-            <div className="space-y-4">
+          {/* 3. Preclinical Data Explorer */}
+          <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-center gap-5">
+              <div className="p-3 bg-[#7B61FF]/10 rounded-xl text-[#7B61FF] flex items-center justify-center shrink-0">
+                <Icon name="flask-conical" size={26} />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-white tracking-tight">Preclinical Data Explorer</h2>
+                <p className="text-gray-500 text-[12px] font-medium mt-0.5">Deep-dive into early-stage asset data.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button onClick={() => setPremiumAction('Premium_Interest_Preclinical_PDF')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
+                <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF
+              </button>
+              <button onClick={() => trackClick('Open_Preclinical_Explorer', 'https://presigna-preclinical-data-explorer.streamlit.app/')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#7B61FF]/10 hover:bg-[#7B61FF]/20 text-[#7B61FF] text-xs font-bold transition-all border border-[#7B61FF]/20 flex items-center justify-center gap-2">
+                Open <Icon name="external-link" size={12} />
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      {/* Free Partner Report Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 premium-blur animate-in">
+          <div className="bg-card w-full max-w-sm rounded-[36px] p-10 border border-white/10 relative shadow-2xl scale-in-center">
+            <button onClick={() => setShowSuccessModal(false)} className="absolute top-7 right-7 text-gray-500 hover:text-white transition-colors p-1"><Icon name="x" size={22} /></button>
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="w-20 h-20 bg-[#7B61FF]/15 rounded-full flex items-center justify-center text-[#7B61FF] border border-[#7B61FF]/20"><Icon name="check-circle-2" size={40} /></div>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-black tracking-tight">Request Received</h3>
+                <p className="text-gray-400 text-sm leading-relaxed font-medium">Your free custom report for 1 partner will be sent to <span className="text-[#7B61FF] font-semibold">{user.email}</span> within 24 hours.</p>
+              </div>
+              <button onClick={() => setShowSuccessModal(false)} className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-bold transition-all border border-white/5 active:scale-95 text-sm">Got it</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Premium Upsell Modal (Dynamic Render based on premiumAction) */}
+      {premiumAction !== '' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 premium-blur animate-in">
+          <div className="bg-[#16161D] w-full max-w-md rounded-[36px] p-10 border border-[#7B61FF]/30 relative shadow-[0_0_50px_rgba(123,97,255,0.15)] scale-in-center overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#7B61FF]/20 blur-[50px] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+            
+            {!premiumLoading && !premiumSuccess && (
+              <button onClick={() => setPremiumAction('')} className="absolute top-7 right-7 text-gray-500 hover:text-white transition-colors p-1 z-10"><Icon name="x" size={22} /></button>
+            )}
+            
+            <div className="flex flex-col items-center text-center space-y-6 relative z-10">
               
-              {/* 2. Clinical Pipeline Tracker */}
-              <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                <div className="flex items-center gap-5">
-                  <div className="p-3 bg-[#7B61FF]/10 rounded-xl text-[#7B61FF] flex items-center justify-center shrink-0">
-                    <Icon name="stethoscope" size={26} />
+              {premiumSuccess ? (
+                <div className="animate-in flex flex-col items-center py-4">
+                  <div className="w-16 h-16 bg-[#7B61FF]/20 rounded-full flex items-center justify-center text-[#7B61FF] mb-4 border border-[#7B61FF]/30">
+                    <Icon name="check" size={32} />
                   </div>
-                  <div>
-                    <h2 className="text-base font-bold text-white tracking-tight">Clinical Development Tracker</h2>
-                    <p className="text-gray-500 text-[12px] font-medium mt-0.5">Real-time monitoring of trial progression.</p>
-                  </div>
+                  <h3 className="text-xl font-black text-white mb-2 tracking-tight">Waitlist Confirmed!</h3>
+                  <p className="text-gray-400 text-sm">얼리버드 혜택이 등록되었습니다.<br/>정식 런칭 시 등록된 이메일로 안내해 드리겠습니다.</p>
                 </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <button onClick={() => setShowPremiumModal(true)} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
-                    <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF
-                  </button>
-                  <button onClick={() => trackClick('Clinical Pipeline Tracker', 'https://presigna-clinical-pipeline-tracker.streamlit.app/')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#7B61FF]/10 hover:bg-[#7B61FF]/20 text-[#7B61FF] text-xs font-bold transition-all border border-[#7B61FF]/20 flex items-center justify-center gap-2">
-                    Open <Icon name="external-link" size={12} />
-                  </button>
-                </div>
-              </div>
-
-              {/* 3. Preclinical Data Explorer */}
-              <div className="bg-card rounded-[24px] p-6 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                <div className="flex items-center gap-5">
-                  <div className="p-3 bg-[#7B61FF]/10 rounded-xl text-[#7B61FF] flex items-center justify-center shrink-0">
-                    <Icon name="flask-conical" size={26} />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-bold text-white tracking-tight">Preclinical Data Explorer</h2>
-                    <p className="text-gray-500 text-[12px] font-medium mt-0.5">Deep-dive into early-stage asset data.</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <button onClick={() => setShowPremiumModal(true)} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
-                    <Icon name="lock" size={12} className="text-[#7B61FF]" /> Export PDF
-                  </button>
-                  <button onClick={() => trackClick('Preclinical Data Explorer', 'https://presigna-preclinical-data-explorer.streamlit.app/')} className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#7B61FF]/10 hover:bg-[#7B61FF]/20 text-[#7B61FF] text-xs font-bold transition-all border border-[#7B61FF]/20 flex items-center justify-center gap-2">
-                    Open <Icon name="external-link" size={12} />
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </main>
-
-          {/* Success Modal */}
-          {showSuccessModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 premium-blur animate-in">
-              <div className="bg-card w-full max-w-sm rounded-[36px] p-10 border border-white/10 relative shadow-2xl scale-in-center">
-                <button onClick={() => setShowSuccessModal(false)} className="absolute top-7 right-7 text-gray-500 hover:text-white transition-colors p-1"><Icon name="x" size={22} /></button>
-                <div className="flex flex-col items-center text-center space-y-6">
-                  <div className="w-20 h-20 bg-[#7B61FF]/15 rounded-full flex items-center justify-center text-[#7B61FF] border border-[#7B61FF]/20"><Icon name="check-circle-2" size={40} /></div>
-                  <div className="space-y-3">
-                    <h3 className="text-2xl font-black tracking-tight">Request Received</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed font-medium">Your free custom report for 1 partner will be sent to <span className="text-[#7B61FF] font-semibold">{user.email}</span> within 24 hours.</p>
-                  </div>
-                  <button onClick={() => setShowSuccessModal(false)} className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-bold transition-all border border-white/5 active:scale-95 text-sm">Got it</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Premium Upsell Modal */}
-          {showPremiumModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 premium-blur animate-in">
-              <div className="bg-[#16161D] w-full max-w-md rounded-[36px] p-10 border border-[#7B61FF]/30 relative shadow-[0_0_50px_rgba(123,97,255,0.15)] scale-in-center overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#7B61FF]/20 blur-[50px] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                
-                <button onClick={() => setShowPremiumModal(false)} className="absolute top-7 right-7 text-gray-500 hover:text-white transition-colors p-1 z-10"><Icon name="x" size={22} /></button>
-                
-                <div className="flex flex-col items-center text-center space-y-6 relative z-10">
+              ) : (
+                <>
                   <div className="w-16 h-16 bg-[#7B61FF]/15 rounded-full flex items-center justify-center text-[#7B61FF] border border-[#7B61FF]/20 mb-2">
                     <Icon name="unlock" size={32} />
                   </div>
@@ -293,19 +338,30 @@
                       <p className="text-white text-xs mt-1.5 font-medium">Join today and get your first <span className="text-[#7B61FF] font-black">3 MONTHS FREE</span> upon official launch.</p>
                     </div>
                   </div>
-                  <button onClick={() => { setShowPremiumModal(false); /* 추후 이메일 Waitlist 수집 API 연결 부 */ }} className="w-full py-4 mt-2 bg-[#7B61FF] hover:bg-[#6a50ee] text-white rounded-2xl font-extrabold transition-all border border-[#7B61FF]/50 shadow-lg shadow-[#7B61FF]/20 active:scale-95 text-base tracking-wide flex items-center justify-center gap-2">
-                    Express Interest & Claim Offer
-                    <Icon name="arrow-right" size={18} />
+                  
+                  <button 
+                    onClick={handlePremiumInterest} 
+                    disabled={premiumLoading}
+                    className="w-full py-4 mt-2 bg-[#7B61FF] hover:bg-[#6a50ee] disabled:opacity-70 text-white rounded-2xl font-extrabold transition-all border border-[#7B61FF]/50 shadow-lg shadow-[#7B61FF]/20 active:scale-95 text-base tracking-wide flex items-center justify-center gap-2"
+                  >
+                    {premiumLoading ? (
+                      <span className="flex items-center gap-2"><Icon name="loader-2" className="animate-spin" size={18} /> Processing...</span>
+                    ) : (
+                      <>
+                        Express Interest & Claim Offer
+                        <Icon name="arrow-right" size={18} />
+                      </>
+                    )}
                   </button>
-                </div>
-              </div>
+                </>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      );
-    };
-
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+      )}
+    </div>
+  );
+};
   </script>
 </body>
 </html>
