@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presigna — Partnering Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }, colors: { brand: '#7B61FF' } } }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    .font-display { font-family: 'DM Sans', system-ui, sans-serif; letter-spacing: -0.01em; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0D0D12; }
+    ::-webkit-scrollbar-thumb { background: #1F1F29; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #7B61FF; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0D0D12] text-slate-300 antialiased selection:bg-[#7B61FF]/30 selection:text-white">
+
+  <nav class="w-full px-6 lg:px-12 py-5 flex justify-between items-center max-w-[1500px] mx-auto">
+    <a href="index.html" class="flex items-center gap-0 font-display text-[1.35rem] font-bold text-white tracking-tight select-none">
+      presigna<span class="text-[#7B61FF] text-2xl leading-none">.</span>
+    </a>
+    <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#7B61FF]/30 bg-[#7B61FF]/10 text-[#9D8BFF] text-[10px] font-bold uppercase tracking-[0.2em]">
+      <span class="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse"></span>
+      Bio Korea 2026 Special
+    </div>
+  </nav>
+
+  <main class="max-w-[1500px] mx-auto px-6 lg:px-12 pb-32 pt-8 flex flex-col lg:grid lg:grid-cols-12 gap-16 lg:gap-24 xl:gap-32 items-start">
+
+    <div class="lg:col-span-7 flex flex-col space-y-16 lg:sticky lg:top-12 z-10 pt-4">
+      <div class="space-y-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#7B61FF]/30 bg-[#7B61FF]/10 text-[#9D8BFF] text-[10px] font-bold uppercase tracking-[0.2em] md:hidden">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse"></span>
+          Bio Korea 2026 Special
+        </div>
+        <h1 class="font-display text-[2.4rem] lg:text-[3rem] xl:text-[3.5rem] font-black text-white leading-[1.15] tracking-tight">
+          Are You Walking Into<br/>
+          BIO KOREA 2026<br/>
+          Partnering Meetings<br/>
+          <span class="text-[#7B61FF]">Relying Only on<br class="sm:hidden"/> Press Releases?</span>
+        </h1>
+        <p class="text-lg xl:text-xl text-slate-400 leading-relaxed max-w-3xl font-medium">
+          Surface-level data doesn't close deals. Secure your competitive edge with Presigna's granular preclinical intelligence and dynamic clinical pipeline trackers for your target partners.
+        </p>
+      </div>
+
+      <div class="w-12 h-px bg-white/10"></div>
+
+      <ul class="space-y-10">
+        <li class="flex items-start gap-6">
+          <div class="mt-1 bg-[#7B61FF]/10 p-3 rounded-2xl border border-[#7B61FF]/20 shrink-0">
+            <i data-lucide="target" class="w-7 h-7 text-[#7B61FF]"></i>
+          </div>
+          <div>
+            <strong class="text-white block text-xl font-bold mb-2 tracking-tight">Tailored Partner Intelligence</strong>
+            <span class="text-slate-400 text-base leading-relaxed block max-w-2xl">Boardroom-ready strategic overviews of your specific target companies, uncovering hidden deal structures.</span>
+          </div>
+        </li>
+        <li class="flex items-start gap-6">
+          <div class="mt-1 bg-[#7B61FF]/10 p-3 rounded-2xl border border-[#7B61FF]/20 shrink-0">
+            <i data-lucide="stethoscope" class="w-7 h-7 text-[#7B61FF]"></i>
+          </div>
+          <div>
+            <strong class="text-white block text-xl font-bold mb-2 tracking-tight">Clinical Development Tracker</strong>
+            <span class="text-slate-400 text-base leading-relaxed block max-w-2xl">Real-time monitoring of clinical trial progression, expected milestone dates, phase transitions, and delay alerts.</span>
+          </div>
+        </li>
+        <li class="flex items-start gap-6">
+          <div class="mt-1 bg-[#7B61FF]/10 p-3 rounded-2xl border border-[#7B61FF]/20 shrink-0">
+            <i data-lucide="flask-conical" class="w-7 h-7 text-[#7B61FF]"></i>
+          </div>
+          <div>
+            <strong class="text-white block text-xl font-bold mb-2 tracking-tight">Preclinical Data Explorer</strong>
+            <span class="text-slate-400 text-base leading-relaxed block max-w-2xl">Deep-dive into early-stage asset data, mechanism of action (MoA), and comparative in-vitro/in-vivo proof of concepts.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="lg:col-span-5 w-full relative mt-4 lg:mt-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[60%] bg-[#7B61FF]/8 blur-[120px] rounded-full pointer-events-none z-0"></div>
+
+      <div class="relative z-10 w-full rounded-2xl border border-white/10 bg-[#16161D] shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col">
+
+        <div class="bg-[#1a1a23] p-7 xl:p-9 border-b border-white/10 relative z-20">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#7B61FF] via-[#9D8BFF] to-[#7B61FF]/40"></div>
+
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="text-sm font-semibold text-slate-500 flex items-center gap-1.5 uppercase tracking-widest">
+                <i data-lucide="lock-keyhole" class="w-3.5 h-3.5 text-[#7B61FF]"></i>
+                Private Beta Access
+              </h3>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#7B61FF]/10 border border-[#7B61FF]/20">
+                <span class="text-[10px] font-bold text-[#9D8BFF] tracking-widest uppercase">Invite Only</span>
+              </div>
+            </div>
+
+            <div class="mb-5">
+              <h2 class="text-2xl font-display font-bold text-white mb-2 tracking-tight">Request Beta Access</h2>
+              <p class="text-sm text-slate-400 leading-relaxed">Join the exclusive waitlist for BIO KOREA 2026 attendees to experience our intelligence platform.</p>
+            </div>
+          </div>
+
+          <form id="beta-form" class="space-y-5" novalidate>
+            <div class="space-y-4">
+              <div>
+                <label for="name" class="block text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-[0.15em]">Full Name</label>
+                <input type="text" id="name" autocomplete="name"
+                  class="w-full bg-[#0D0D12] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-[#7B61FF] focus:ring-1 focus:ring-[#7B61FF] transition-colors text-sm font-medium"
+                  placeholder="John Doe" />
+              </div>
+              <div>
+                <label for="email" class="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-[0.15em]">
+                  <span>Work Email</span>
+                  <span class="text-[#7B61FF]/70 lowercase font-normal tracking-normal">(Corporate only)</span>
+                </label>
+                <input type="email" id="email" autocomplete="email"
+                  class="w-full bg-[#0D0D12] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-[#7B61FF] focus:ring-1 focus:ring-[#7B61FF] transition-colors text-sm font-medium"
+                  placeholder="name@pharma.com" />
+              </div>
+            </div>
+
+            <p id="form-error" class="hidden text-red-400 text-xs font-medium px-1"></p>
+
+            <button type="submit" id="submit-btn"
+              class="w-full bg-[#7B61FF] hover:bg-[#6a50ee] text-white font-extrabold py-4 px-4 rounded-xl transition-all flex items-center justify-center gap-2 group border border-[#7B61FF]/50 shadow-lg shadow-[#7B61FF]/20 text-base tracking-tight h-14 active:scale-[0.98]">
+              Continue to Platform
+              <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </form>
+          <p class="text-xs text-slate-600 mt-4 text-center font-medium">Secure & confidential. Domain verification required.</p>
+        </div>
+
+        <div class="relative h-[580px] bg-[#16161D] overflow-hidden select-none">
+          <div class="absolute inset-0 z-10 bg-gradient-to-b from-[#16161D]/10 via-[#16161D]/70 to-[#0D0D12] pointer-events-none"></div>
+          <div class="absolute inset-0 z-10 backdrop-blur-[3px] pointer-events-none flex flex-col items-center pt-28">
+            <div class="bg-[#1a1a23]/90 backdrop-blur-md px-6 py-3.5 rounded-full shadow-2xl border border-[#7B61FF]/30 text-white/80 font-semibold flex items-center gap-2 text-sm tracking-wide">
+              <i data-lucide="bar-chart" class="w-4 h-4 text-[#7B61FF]"></i>
+              Gain granular insights for strategic deals
+            </div>
+          </div>
+          <div class="p-7 space-y-10 opacity-60">
+            <div class="flex justify-between items-start border-b border-white/5 pb-5">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-[#1F1F29] flex items-center justify-center border border-white/5">
+                  <i data-lucide="flask-conical" class="w-6 h-6 text-[#7B61FF]"></i>
+                </div>
+                <div>
+                  <h4 class="text-white text-base font-bold">MediNova Oncology</h4>
+                  <p class="text-xs text-slate-500 font-medium mt-0.5">Updated: 2 hours ago • Sector: Precision Oncology</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h5 class="text-[11px] font-bold text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2">
+                <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i> Preclinical Efficacy
+              </h5>
+              <div class="h-36 bg-white/3 rounded-xl border border-white/5 p-5 flex items-end gap-3.5 w-full">
+                <div class="flex-1 bg-slate-700/50 rounded-t h-[30%]"></div>
+                <div class="flex-1 bg-[#7B61FF]/80 rounded-t h-[85%] relative shadow-[0_0_15px_rgba(123,97,255,0.4)]"></div>
+                <div class="flex-1 bg-slate-600/50 rounded-t h-[50%]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2O22ViMQtwS16wlYEZhKHU7tJNuuYzTYfTi4y3LAh7zzfCUtn163WayDvoMoNQWnLSQ/exec';
+
+    document.getElementById('beta-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nameEl  = document.getElementById('name');
+      const emailEl = document.getElementById('email');
+      const errorEl = document.getElementById('form-error');
+      const btn     = document.getElementById('submit-btn');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      errorEl.classList.add('hidden');
+
+      const name  = nameEl.value.trim();
+      const email = emailEl.value.trim();
+
+      if (!name)  { showError(errorEl, 'Please enter your full name.'); nameEl.focus(); return; }
+      if (!email || !emailRegex.test(email)) { showError(errorEl, 'Please enter a valid work email address.'); emailEl.focus(); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="animate-spin w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
+
+      try {
+        localStorage.setItem('presigna_user', JSON.stringify({ name: name, email: email, timestamp: new Date().toISOString() }));
+      } catch (err) {
+        showError(errorEl, 'Storage unavailable. Please enable cookies/local storage.');
+        btn.disabled = false;
+        btn.innerHTML = 'Continue to Platform <svg ...></svg>';
+        return;
+      }
+
+      fetch(APPS_SCRIPT_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    'name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email)
+      }).catch(function () {}).finally(function () {
+        window.location.href = 'step2.html';
+      });
+    });
+  </script>
+</body>
+</html>
